@@ -1,0 +1,86 @@
+# FastSpeech 2 — English (Svarah, Indian-accented English)
+# All relative paths are resolved from this file's folder.
+language: english
+experiment: fastspeech2_english_svarah
+
+paths:
+  raw_dir: ../data/english/raw                 # exported 22.05 kHz wavs + manifest.jsonl
+  preprocessed_dir: ../data/english/preprocessed
+  hf_cache_dir: ../data/hf_cache
+  checkpoint_dir: ./checkpoints
+  log_dir: ../logs/english
+  results_dir: ../Results/English
+  vocoder_checkpoint: ../pretrained/hifigan_universal.pth.tar
+
+dataset:
+  hf_name: ai4bharat/Svarah          # gated: accept terms on HF and export HF_TOKEN
+  hf_config: null
+  hf_split: test                     # Svarah ships a single 'test' split (~9.6 h, 117 speakers)
+  audio_column: auto
+  text_column: auto
+  speaker_column: auto               # falls back to file-name ids, then gender
+  gender_column: gender
+  train_hours: 5.0
+  val_hours: 1.0
+  min_duration: 1.0
+  max_duration: 15.0
+  max_duration_ceiling: 25.0
+  single_speaker: false              # Svarah has only ~5 min per speaker -> multi-speaker model
+  preferred_speaker: null
+  seed: 1234
+  overwrite: false
+
+audio:                               # must match the universal HiFi-GAN vocoder
+  sampling_rate: 22050               # Svarah is 16 kHz; upsampled (content < 8 kHz = mel_fmax)
+  n_fft: 1024
+  hop_length: 256
+  win_length: 1024
+  n_mels: 80
+  mel_fmin: 0
+  mel_fmax: 8000
+  f0_min: 60
+  f0_max: 500
+  trim_top_db: 35
+  trim_margin_sec: 0.05
+
+preprocessing:
+  num_workers: 0                     # 0 = auto (cpu_count - 1)
+
+model:                               # paper / ming024 sizes
+  encoder: {layers: 4, hidden: 256, heads: 2, conv_filter_size: 1024, conv_kernel_size: [9, 1], dropout: 0.2}
+  decoder: {layers: 6, hidden: 256, heads: 2, conv_filter_size: 1024, conv_kernel_size: [9, 1], dropout: 0.2}
+  variance_predictor: {filter_size: 256, kernel_size: 3, dropout: 0.5}
+  variance_embedding: {n_bins: 256}
+  postnet: {channels: 512, kernel_size: 5, layers: 5, dropout: 0.5}
+  aligner:
+    attention_channels: 80
+    temperature: 0.0005
+    prior_scaling: 1.0
+    bin_loss_start_step: 3000
+    bin_loss_warmup_steps: 3000
+
+loss_weights: {mel: 1.0, postnet: 1.0, duration: 1.0, pitch: 1.0, energy: 1.0, ctc: 1.0, bin: 1.0}
+
+optimizer:
+  peak_lr: 0.001
+  warmup_steps: 4000
+  betas: [0.9, 0.98]
+  eps: 1.0e-9
+  weight_decay: 0.0
+
+train:
+  seed: 1234
+  device: auto
+  total_steps: 40000
+  max_frames_per_batch: 12000         # ~140 s of audio per batch; lower if you hit OOM
+  max_batch_size: 24
+  grad_accum: 1
+  grad_clip: 1.0
+  fp16: true
+  num_workers: 4
+  log_every: 100
+  val_every: 1000
+  save_every: 5000
+  keep_last: 2
+  early_stopping_patience: 0           # 0 = off (number of validations without improvement)
+  resume: true

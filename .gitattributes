@@ -1,0 +1,6 @@
+# model_inference.pt (~70 MB) fits under GitHub's 100 MB limit. If you also want
+# to commit best.pt/last.pt, enable Git LFS first:  git lfs install && git lfs track "*.pt"
+*.wav binary
+*.png binary
+*.pdf binary
+*.pt  binary

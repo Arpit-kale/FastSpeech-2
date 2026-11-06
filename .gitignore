@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+
+# Data, caches, logs (re-creatable with the pipeline)
+data/english/
+data/telugu/
+data/hf_cache/
+data/smoke/
+logs/
+pretrained/
+
+# Training-state checkpoints are large (weights + optimizer); keep only the
+# exported inference checkpoint (model_inference.pt, ~70 MB) in git.
+English/checkpoints/*.pt
+Telugu/checkpoints/*.pt
+!English/checkpoints/model_inference.pt
+!Telugu/checkpoints/model_inference.pt
+
+# Misc
+.DS_Store
+.idea/
+.vscode/
+*.tmp
+*.part

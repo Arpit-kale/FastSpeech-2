@@ -1,0 +1,18 @@
+services:
+  studio:
+    build: .
+    image: fastspeech2-studio:latest
+    ports:
+      - "7860:7860"
+    environment:
+      FS2_DEVICE: cpu
+      FS2_PRELOAD: "1"
+      # Optional: download checkpoints at start-up instead of baking them in
+      # FS2_ENGLISH_CHECKPOINT_URL: https://huggingface.co/<user>/<repo>/resolve/main/english_model_inference.pt
+      # FS2_TELUGU_CHECKPOINT_URL:  https://huggingface.co/<user>/<repo>/resolve/main/telugu_model_inference.pt
+    volumes:
+      - ./English/checkpoints:/app/English/checkpoints
+      - ./Telugu/checkpoints:/app/Telugu/checkpoints
+      - ./Results:/app/Results
+      - ./Report:/app/Report
+    restart: unless-stopped

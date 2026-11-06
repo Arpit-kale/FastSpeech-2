@@ -1,0 +1,86 @@
+# FastSpeech 2 — Telugu (IndicTTS Telugu, studio-quality read speech)
+# All relative paths are resolved from this file's folder.
+language: telugu
+experiment: fastspeech2_telugu_indictts
+
+paths:
+  raw_dir: ../data/telugu/raw
+  preprocessed_dir: ../data/telugu/preprocessed
+  hf_cache_dir: ../data/hf_cache
+  checkpoint_dir: ./checkpoints
+  log_dir: ../logs/telugu
+  results_dir: ../Results/Telugu
+  vocoder_checkpoint: ../pretrained/hifigan_universal.pth.tar
+
+dataset:
+  hf_name: SPRINGLab/IndicTTS_Telugu
+  hf_config: null
+  hf_split: train                    # single split, columns: audio, text, gender (female/male)
+  audio_column: auto
+  text_column: text
+  speaker_column: auto               # no speaker column -> gender is used as speaker id
+  gender_column: gender
+  train_hours: 5.0
+  val_hours: 1.0
+  min_duration: 1.0
+  max_duration: 15.0                 # long paragraphs (up to 150 s) are excluded
+  max_duration_ceiling: 25.0         # auto-relaxed if the speaker pool is too small
+  single_speaker: auto               # keep one speaker if it covers 6 h, else both + speaker embedding
+  preferred_speaker: female
+  seed: 1234
+  overwrite: false
+
+audio:
+  sampling_rate: 22050               # IndicTTS is 48 kHz; downsampled with soxr
+  n_fft: 1024
+  hop_length: 256
+  win_length: 1024
+  n_mels: 80
+  mel_fmin: 0
+  mel_fmax: 8000
+  f0_min: 60
+  f0_max: 600
+  trim_top_db: 35
+  trim_margin_sec: 0.05
+
+preprocessing:
+  num_workers: 0
+
+model:
+  encoder: {layers: 4, hidden: 256, heads: 2, conv_filter_size: 1024, conv_kernel_size: [9, 1], dropout: 0.2}
+  decoder: {layers: 6, hidden: 256, heads: 2, conv_filter_size: 1024, conv_kernel_size: [9, 1], dropout: 0.2}
+  variance_predictor: {filter_size: 256, kernel_size: 3, dropout: 0.5}
+  variance_embedding: {n_bins: 256}
+  postnet: {channels: 512, kernel_size: 5, layers: 5, dropout: 0.5}
+  aligner:
+    attention_channels: 80
+    temperature: 0.0005
+    prior_scaling: 1.0
+    bin_loss_start_step: 3000
+    bin_loss_warmup_steps: 3000
+
+loss_weights: {mel: 1.0, postnet: 1.0, duration: 1.0, pitch: 1.0, energy: 1.0, ctc: 1.0, bin: 1.0}
+
+optimizer:
+  peak_lr: 0.001
+  warmup_steps: 4000
+  betas: [0.9, 0.98]
+  eps: 1.0e-9
+  weight_decay: 0.0
+
+train:
+  seed: 1234
+  device: auto
+  total_steps: 40000
+  max_frames_per_batch: 12000
+  max_batch_size: 24
+  grad_accum: 1
+  grad_clip: 1.0
+  fp16: true
+  num_workers: 4
+  log_every: 100
+  val_every: 1000
+  save_every: 5000
+  keep_last: 2
+  early_stopping_patience: 0
+  resume: true

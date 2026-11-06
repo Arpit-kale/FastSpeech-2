@@ -1,0 +1,17 @@
+{
+  "_note": "Text is kept exactly as specified in the assignment. Telugu lines were re-typed from the PDF because PDF text extraction breaks Telugu conjuncts (e.g. 'విశ్లషే ించారు' -> 'విశ్లేషించారు'); the intentional word split in T3 ('అడ విలో', mirroring E3 'rhyth m') is preserved. Verify against the original PDF before submission.",
+  "english": [
+    {"id": "E1", "text": "The antidisestablishmentarianism movement gained considerable momentum during the parliamentary proceedings.", "focus": "Very long / rare word (OOV robustness, duration of long sequences)"},
+    {"id": "E2a", "text": "The orchestra's conduct during the ceremony was praised by the audience.", "focus": "Homograph 'conduct' used as a NOUN (stress on first syllable: CON-duct)"},
+    {"id": "E2b", "text": "The researchers will conduct an experiment to evaluate the proposed method.", "focus": "Homograph 'conduct' used as a VERB (stress on second syllable: con-DUCT)"},
+    {"id": "E3", "text": "The rhyth m of the orchestra changed unexpectedly.", "focus": "Broken word 'rhyth m' (tokenisation / robustness to malformed input)"},
+    {"id": "E4", "text": "The meeting will start at 10:45 AM on 12 November 2026, so andaroo should arrive on time.", "focus": "Time, date and year normalisation + code-mixed Telugu word 'andaroo'"}
+  ],
+  "telugu": [
+    {"id": "T1", "text": "న్యూరోఫార్మకోలాజికల్ పరిశోధనలో నూతన ఔషధాల ప్రభావాన్ని విశ్లేషించారు.", "focus": "Very long technical loanword with conjuncts (న్యూ, ర్మ, శ్లే)"},
+    {"id": "T2a", "text": "తాడుపై అతని పట్టు చాలా బలంగా ఉంది.", "focus": "Homograph 'పట్టు' = grip (on the rope)"},
+    {"id": "T2b", "text": "ఆమె పట్టు చీరను ధరించి వేడుకకు వచ్చింది.", "focus": "Homograph 'పట్టు' = silk (silk saree)"},
+    {"id": "T3", "text": "పులి అడ విలో నిశ్శబ్దంగా నడిచింది.", "focus": "Broken word 'అడ విలో' (= అడవిలో, 'in the forest')"},
+    {"id": "T4", "text": "ఈ సమావేశం 2026 నవంబర్ 12వ తేదీ ఉదయం 10:45 గంటలకు ప్రారంభమవుతుంది, సమయానికి సిద్ధంగా ఉంచండి.", "focus": "Year, ordinal (12వ) and time normalisation in Telugu"}
+  ]
+}

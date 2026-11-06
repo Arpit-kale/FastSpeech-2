@@ -1,0 +1,17 @@
+.git
+.github
+**/__pycache__
+.pytest_cache
+data/english
+data/telugu
+data/hf_cache
+data/smoke
+logs
+notebooks
+tests
+English/checkpoints/step_*.pt
+English/checkpoints/last.pt
+English/checkpoints/best.pt
+Telugu/checkpoints/step_*.pt
+Telugu/checkpoints/last.pt
+Telugu/checkpoints/best.pt

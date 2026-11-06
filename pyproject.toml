@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fastspeech2-en-te"
+version = "1.0.0"
+description = "FastSpeech 2 TTS for English (Svarah) and Telugu (IndicTTS) with a learned aligner and web studio"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[project.scripts]
+fastspeech2 = "fastspeech2.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["fastspeech2*", "app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning", "ignore::FutureWarning", "ignore::UserWarning"]
+
+[tool.ruff]
+line-length = 120

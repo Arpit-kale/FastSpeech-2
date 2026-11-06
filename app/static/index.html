@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FastSpeech 2 Studio — English &amp; Telugu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%232a78d6'/><path d='M7 18v-4M11 22V10M15 19v-6M19 24V8M23 20v-8M27 17v-2' stroke='white' stroke-width='2.2' stroke-linecap='round'/></svg>" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8"/><path d="M7 18v-4M11 22V10M15 19v-6M19 24V8M23 20v-8M27 17v-2"/></svg>
+      </span>
+      <div>
+        <div class="brand-title">FastSpeech 2 Studio</div>
+        <div class="brand-sub">Non-autoregressive TTS · English &amp; Telugu</div>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-view="studio" role="tab">Studio</button>
+      <button class="tab" data-view="results" role="tab">Assignment results</button>
+      <button class="tab" data-view="about" role="tab">About</button>
+    </nav>
+    <div id="model-status" class="status-pills"></div>
+  </header>
+
+  <main>
+    <!-- ======================= STUDIO ======================= -->
+    <section id="view-studio" class="view active">
+      <div class="grid">
+        <div class="card compose">
+          <div class="card-head">
+            <h2>Compose</h2>
+            <div class="segmented" id="lang-switch">
+              <button data-lang="english" class="on">English</button>
+              <button data-lang="telugu">తెలుగు</button>
+            </div>
+          </div>
+
+          <label class="field">
+            <span class="field-label">Text <span id="char-count" class="muted">0 / 600</span></span>
+            <textarea id="text" rows="5" maxlength="600" placeholder="Type a sentence…"></textarea>
+          </label>
+
+          <div class="field">
+            <span class="field-label">Assignment test sentences</span>
+            <div id="samples" class="chips"></div>
+          </div>
+
+          <div class="controls">
+            <label class="field">
+              <span class="field-label">Speaker</span>
+              <select id="speaker"><option value="">Default</option></select>
+            </label>
+            <div class="slider">
+              <div class="slider-top"><span>Speed</span><output id="dur-out">1.00×</output></div>
+              <input id="dur" type="range" min="0.5" max="2" step="0.05" value="1" aria-label="Duration control" />
+              <div class="slider-hint"><span>faster</span><span>slower</span></div>
+            </div>
+            <div class="slider">
+              <div class="slider-top"><span>Pitch</span><output id="pitch-out">1.00×</output></div>
+              <input id="pitch" type="range" min="0.7" max="1.4" step="0.01" value="1" aria-label="Pitch control" />
+              <div class="slider-hint"><span>lower</span><span>higher</span></div>
+            </div>
+            <div class="slider">
+              <div class="slider-top"><span>Energy</span><output id="energy-out">1.00×</output></div>
+              <input id="energy" type="range" min="0.5" max="1.5" step="0.05" value="1" aria-label="Energy control" />
+              <div class="slider-hint"><span>softer</span><span>louder</span></div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="reset" class="btn ghost">Reset controls</button>
+            <button id="go" class="btn primary">
+              <span class="btn-label">Synthesize</span>
+              <span class="spinner" aria-hidden="true"></span>
+            </button>
+          </div>
+          <p id="error" class="error" role="alert" hidden></p>
+        </div>
+
+        <div class="card output">
+          <div class="card-head">
+            <h2>Output</h2>
+            <a id="download" class="btn ghost small" download="fastspeech2.wav" hidden>Download WAV</a>
+          </div>
+
+          <div id="empty" class="empty">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 34v-4M16 42V22M24 38V26M32 48V16M40 40V24M48 36v-8M56 33v-2"/></svg>
+            <p>Your synthesized speech, the generated mel spectrogram and the variance-adaptor predictions will appear here.</p>
+          </div>
+
+          <div id="result" hidden>
+            <audio id="player" controls></audio>
+            <div class="stats" id="stats"></div>
+            <div class="normalized"><span class="muted">Normalised text</span><p id="normalized"></p></div>
+            <div class="mel-wrap"><canvas id="mel" height="120"></canvas></div>
+            <div class="subtabs" id="var-tabs">
+              <button class="on" data-var="duration">Duration</button>
+              <button data-var="pitch">Pitch (F0)</button>
+              <button data-var="energy">Energy</button>
+            </div>
+            <div class="chart-wrap"><canvas id="chart"></canvas></div>
+            <div class="words" id="words"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card history">
+        <div class="card-head"><h2>Session history</h2><span class="muted small">Stored only in this tab</span></div>
+        <ol id="history" class="history-list"><li class="muted">Nothing yet.</li></ol>
+      </div>
+    </section>
+
+    <!-- ======================= RESULTS ======================= -->
+    <section id="view-results" class="view">
+      <div class="card">
+        <div class="card-head">
+          <h2>Assignment deliverables</h2>
+          <div class="segmented" id="res-lang">
+            <button data-lang="english" class="on">English</button>
+            <button data-lang="telugu">Telugu</button>
+          </div>
+        </div>
+        <p class="muted">Pre-computed outputs from <code>Results/</code>: loss curves, the five test sentences and their duration / pitch / energy plots. <a href="/report" target="_blank" rel="noopener">Open the technical report (PDF)</a>.</p>
+        <div id="losses" class="loss-grid"></div>
+        <div id="tests" class="tests"></div>
+      </div>
+    </section>
+
+    <!-- ======================= ABOUT ======================= -->
+    <section id="view-about" class="view">
+      <div class="card prose">
+        <h2>How it works</h2>
+        <ol class="pipeline">
+          <li><b>Text frontend</b> — numbers, dates and times are expanded; English uses CMUdict + POS-aware g2p_en, Telugu a rule-based akshara-to-phoneme converter.</li>
+          <li><b>Encoder</b> — 4 Feed-Forward Transformer blocks turn phonemes into hidden states.</li>
+          <li><b>Variance adaptor</b> — predicts each phoneme's <i>duration</i>, <i>pitch</i> and <i>energy</i>; the sliders scale these predictions.</li>
+          <li><b>Length regulator + decoder</b> — expands phonemes to frames and predicts an 80-bin mel spectrogram, refined by a PostNet.</li>
+          <li><b>HiFi-GAN vocoder</b> — converts the mel spectrogram to a 22.05 kHz waveform.</li>
+        </ol>
+        <p>Durations were learned without forced alignment using a monotonic alignment search over a learned soft alignment (RAD-TTS style), which made Telugu support possible without an external aligner.</p>
+        <h3>API</h3>
+<pre><code>POST /api/synthesize      {"language":"telugu","text":"…","duration_control":1.0,"pitch_control":1.0,"energy_control":1.0}
+POST /api/synthesize.wav  same body, returns audio/wav
+GET  /api/models          model availability, speakers, training step
+GET  /docs                interactive OpenAPI documentation</code></pre>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">FastSpeech 2 (Ren et al., 2021) · adapted from ming024/FastSpeech2 · <a href="/docs">API docs</a></footer>
+
+  <script src="/static/vendor/chart.umd.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>

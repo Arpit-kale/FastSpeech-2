@@ -1,0 +1,23 @@
+# Human listening notes merged into Technical_Report.pdf by `make report`.
+# Listen to Results/<Language>/test_generated_audios/<ID>.wav and replace each
+# TODO with what you actually hear (pronunciation errors, naturalness, pauses,
+# artefacts). Items left as TODO are printed as "pending" in the report.
+
+author: "TODO: Your Name"
+repo_url: "TODO: https://github.com/<user>/<repo>"
+
+listening:
+  E1: "TODO: Is 'antidisestablishmentarianism' intelligible? Any skipped/slurred syllables? Rhythm of 'parliamentary proceedings'?"
+  E2a: "TODO: Does 'conduct' (noun) sound stressed on the first syllable (CON-duct)?"
+  E2b: "TODO: Does 'conduct' (verb) sound stressed on the second syllable (con-DUCT)?"
+  E3: "TODO: How is 'rhyth m' rendered — joined as 'rhythm' or as 'rhyth' + letter 'em'?"
+  E4: "TODO: Are the time, date and year read correctly? How does 'andaroo' sound?"
+  T1: "TODO: Is the long loanword intelligible? Conjuncts (న్యూ, ర్మ, శ్లే) clear?"
+  T2a: "TODO: Naturalness of 'పట్టు' (grip) and sentence prosody."
+  T2b: "TODO: Naturalness of 'పట్టు చీర' (silk saree); any prosodic difference from T2a?"
+  T3: "TODO: Does 'అడ విలో' sound like one word (అడవిలో) or with an audible break?"
+  T4: "TODO: Are 2026, 12వ and 10:45 read correctly and naturally?"
+
+overall:
+  english: "TODO: overall quality — accent (Indian English from Svarah), clarity, buzziness/vocoder artefacts, speaking rate."
+  telugu: "TODO: overall quality — clarity, naturalness, retroflex/dental contrasts, gemination, sentence-final intonation."
